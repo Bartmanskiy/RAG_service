@@ -1,5 +1,4 @@
 services:
-
   api:
     build: .
     container_name: corporate_rag_api
@@ -26,6 +25,21 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: corporate_rag_ollama_init
+    depends_on:
+      - ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama pull llama3.2:3b
+        ollama pull nomic-embed-text
 
 volumes:
   mongodb_data:
