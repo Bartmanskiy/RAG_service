@@ -3,10 +3,13 @@ import hashlib
 from fastapi import HTTPException, UploadFile, status, BackgroundTasks
 from bson import ObjectId
 
+from pymongo.errors import DuplicateKeyError
+
 from app.config import settings
 from app.models.document import create_document
 from app.repositories.chunk_repository import ChunkRepository
 from app.repositories.document_repository import DocumentRepository
+from app.schemas import document
 
 
 ALLOWED_EXTENSIONS = {".pdf", ".txt", ".md"}
@@ -68,7 +71,13 @@ class DocumentService:
             content_hash=content_hash,
         )
 
-        await self.document_repository.create(document)
+        try:
+            await self.document_repository.create(document)
+        except DuplicateKeyError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Document already exists",
+            )
 
         background_tasks.add_task(
             ingestion_service.process_document,
