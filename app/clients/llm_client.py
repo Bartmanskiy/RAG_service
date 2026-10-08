@@ -1,0 +1,13 @@
+from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator
+
+
+class LLMClient(ABC):
+
+    @abstractmethod
+    async def generate(self, prompt: str) -> str:
+        pass
+
+    @abstractmethod
+    async def stream(self, prompt: str) -> AsyncIterator[str]:
+        pass
