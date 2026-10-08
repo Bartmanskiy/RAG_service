@@ -67,6 +67,17 @@ class ChunkRepository:
                     }
                 }
             },
+            {
+                "$lookup": {
+                    "from": "documents",
+                    "localField": "document_id",
+                    "foreignField": "_id",
+                    "as": "document",
+                    }
+                },
+            {
+                "$unwind": "$document",
+            },
         ]
 
         cursor = await self.collection.aggregate(pipeline)

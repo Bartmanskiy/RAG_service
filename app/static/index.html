@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html lang="uk"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Corporate Knowledge Base</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body> <main class="container">
+
+    <header class="page-header">
+        <h1>Corporate Knowledge Base</h1>
+        <p>
+            Завантажуйте документи та ставте питання
+            на основі корпоративної бази знань.
+        </p>
+    </header>
+
+
+    <!-- Upload section -->
+    <section class="card">
+        <h2>Документи</h2>
+
+        <form id="upload-form">
+            <div class="upload-row">
+                <input
+                    type="file"
+                    id="file-input"
+                    accept=".pdf,.txt,.md"
+                    required
+                >
+
+                <button type="submit" id="upload-button">
+                    Завантажити
+                </button>
+            </div>
+
+            <p class="form-hint">
+                Дозволені формати: PDF, TXT, MD. Максимальний розмір: 10 MB.
+            </p>
+
+            <p id="upload-error" class="error hidden"></p>
+        </form>
+    </section>
+
+
+    <!-- Documents section -->
+    <section class="card">
+        <div class="section-header">
+            <h2>Список документів</h2>
+
+            <button
+                type="button"
+                id="refresh-documents-button"
+                class="secondary-button"
+            >
+                Оновити
+            </button>
+        </div>
+
+        <div id="documents-container">
+            <p class="empty-state">
+                Документів ще немає.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- Chat section -->
+    <section class="card">
+        <h2>Питання до бази знань</h2>
+
+        <form id="ask-form">
+            <textarea
+                id="question-input"
+                rows="4"
+                minlength="3"
+                maxlength="1000"
+                placeholder="Наприклад: Які технології використовує наша компанія?"
+                required
+            ></textarea>
+
+            <div class="chat-actions">
+                <button
+                    type="submit"
+                    id="ask-button"
+                >
+                    Запитати
+                </button>
+            </div>
+
+            <p id="ask-error" class="error hidden"></p>
+        </form>
+    </section>
+
+
+    <!-- Answer section -->
+    <section
+        class="card hidden"
+        id="answer-section"
+    >
+        <h2>Відповідь</h2>
+
+        <div id="answer-container"></div>
+    </section>
+
+
+    <!-- Sources section -->
+    <section
+        class="card hidden"
+        id="sources-section"
+    >
+        <h2>Джерела</h2>
+
+        <div id="sources-container"></div>
+    </section>
+
+</main>
+
+<script src="/static/app.js"></script>
+
+</body> </html>

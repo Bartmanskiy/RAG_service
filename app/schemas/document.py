@@ -9,3 +9,4 @@ class DocumentResponse(BaseModel):
     status: str
     chunks_count: int
     created_at: datetime
+    error: str | None = None

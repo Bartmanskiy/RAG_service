@@ -63,6 +63,7 @@ Answer:
         sources = [
             {
                 "document_id": str(result["document_id"]),
+                "filename": result["document"]["filename"],
                 "page": result["page"],
                 "score": result["score"],
                 "snippet": result["text"],
@@ -81,11 +82,23 @@ Answer:
         top_k: int | None = None,
         document_ids: list[str] | None = None,
     ) -> AsyncIterator[str]:
-        results = await self.retrieval_service.search(
-            question=question,
-            top_k=top_k,
-            document_ids=document_ids,
-        )
+        try:
+            results = await self.retrieval_service.search(
+                question=question,
+                top_k=top_k,
+                document_ids=document_ids,
+      )
+        except ValueError as exc:
+            yield (
+                "event: error\n"
+                "data: "
+                + json.dumps(
+                    {"error": str(exc)},
+                    ensure_ascii=False,
+                )
+                + "\n\n"
+            )
+            return
 
         if not results:
             yield (
@@ -113,6 +126,7 @@ Answer:
         sources = [
             {
                 "document_id": str(result["document_id"]),
+                "filename": result["document"]["filename"],
                 "page": result["page"],
                 "score": result["score"],
                 "snippet": result["text"],

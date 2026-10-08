@@ -3,6 +3,8 @@ from bson import ObjectId
 from app.config import settings
 from app.repositories.chunk_repository import ChunkRepository
 
+from bson.errors import InvalidId
+
 
 class RetrievalService:
     def __init__(
@@ -26,10 +28,13 @@ class RetrievalService:
         object_ids = None
 
         if document_ids:
-            object_ids = [
-                ObjectId(document_id)
-                for document_id in document_ids
-            ]
+            try:
+                object_ids = [
+                    ObjectId(document_id)
+                    for document_id in document_ids
+                ]
+            except InvalidId:
+                raise ValueError("Invalid document_id")
 
         results = await self.chunk_repository.vector_search(
             query_vector=query_vector,

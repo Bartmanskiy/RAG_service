@@ -16,6 +16,7 @@ class AskRequest(BaseModel):
 
 class SourceResponse(BaseModel):
     document_id: str
+    filename: str
     page: int | None
     score: float
     snippet: str

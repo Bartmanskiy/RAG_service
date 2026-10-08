@@ -18,6 +18,7 @@ def document_to_response(document: dict) -> DocumentResponse:
         status=document["status"],
         chunks_count=document["chunks_count"],
         created_at=document["created_at"],
+        error=document.get("error"),
     )
 
 
