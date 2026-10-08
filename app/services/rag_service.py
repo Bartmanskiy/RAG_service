@@ -76,6 +76,7 @@ Answer:
             "sources": sources,
         }
 
+
     async def stream_answer(
         self,
         question: str,
@@ -87,7 +88,7 @@ Answer:
                 question=question,
                 top_k=top_k,
                 document_ids=document_ids,
-      )
+            )
         except ValueError as exc:
             yield (
                 "event: error\n"
