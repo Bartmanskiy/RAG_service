@@ -7,6 +7,8 @@ from app.repositories.document_repository import DocumentRepository
 
 from app.services.document_service import DocumentService
 from app.services.ingestion_service import IngestionService
+from app.services.retrieval_service import RetrievalService
+from app.services.rag_service import RAGService
 
 from app.clients.ollama_client import OllamaClient
 
@@ -23,14 +25,9 @@ def get_chunk_repository(
     return ChunkRepository(db)
 
 
-
 def get_document_service(
-    document_repository: DocumentRepository = Depends(
-        get_document_repository
-    ),
-    chunk_repository: ChunkRepository = Depends(
-        get_chunk_repository
-    ),
+    document_repository: DocumentRepository = Depends(get_document_repository),
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
 ) -> DocumentService:
     return DocumentService(
         document_repository=document_repository,
@@ -43,18 +40,35 @@ def get_ollama_client() -> OllamaClient:
 
 
 def get_ingestion_service(
-    document_repository: DocumentRepository = Depends(
-        get_document_repository
-    ),
-    chunk_repository: ChunkRepository = Depends(
-        get_chunk_repository
-    ),
-    ollama_client: OllamaClient = Depends(
-        get_ollama_client
-    ),
+    document_repository: DocumentRepository = Depends(get_document_repository),
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
+    ollama_client: OllamaClient = Depends(get_ollama_client),
 ) -> IngestionService:
     return IngestionService(
         document_repository=document_repository,
         chunk_repository=chunk_repository,
         embedding_client=ollama_client,
+    )
+
+
+def get_retrieval_service(
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
+    ollama_client: OllamaClient = Depends(get_ollama_client),
+) -> RetrievalService:
+    return RetrievalService(
+        chunk_repository=chunk_repository,
+        embedding_client=ollama_client,
+    )
+
+def get_rag_service(
+    retrieval_service: RetrievalService = Depends(
+        get_retrieval_service
+    ),
+    ollama_client: OllamaClient = Depends(
+        get_ollama_client
+    ),
+) -> RAGService:
+    return RAGService(
+        retrieval_service=retrieval_service,
+        llm_client=ollama_client,
     )

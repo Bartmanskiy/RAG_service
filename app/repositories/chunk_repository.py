@@ -34,3 +34,41 @@ class ChunkRepository:
         )
 
         return result.deleted_count
+
+    async def vector_search(
+        self,
+        query_vector: list[float],
+        top_k: int,
+        document_ids: list[ObjectId] | None = None,
+    ) -> list[dict]:
+        vector_search_stage = {
+            "$vectorSearch": {
+                "index": "vector_index",
+                "path": "embedding",
+                "queryVector": query_vector,
+                "numCandidates": max(top_k * 10, 50),
+                "limit": top_k,
+            }
+        }
+
+        if document_ids:
+            vector_search_stage["$vectorSearch"]["filter"] = {
+                "document_id": {
+                    "$in": document_ids,
+                }
+            }
+
+        pipeline = [
+            vector_search_stage,
+            {
+                "$addFields": {
+                    "score": {
+                        "$meta": "vectorSearchScore",
+                    }
+                }
+            },
+        ]
+
+        cursor = await self.collection.aggregate(pipeline)
+
+        return await cursor.to_list()

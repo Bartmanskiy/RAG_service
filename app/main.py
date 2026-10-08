@@ -10,6 +10,7 @@ from app.database_indexes import init_indexes
 from app.vector_index import init_vector_index
 
 from app.routers.documents import router as documents_router
+from app.routers.ask import router as ask_router
 
 
 @asynccontextmanager
@@ -26,6 +27,7 @@ app = FastAPI(
 )
 
 app.include_router(documents_router)
+app.include_router(ask_router)
 
 @app.get("/health")
 async def health_check(
