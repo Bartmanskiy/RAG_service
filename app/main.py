@@ -9,6 +9,8 @@ from app.database_init import init_database
 from app.database_indexes import init_indexes
 from app.vector_index import init_vector_index
 
+from app.routers.documents import router as documents_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,6 +25,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.include_router(documents_router)
 
 @app.get("/health")
 async def health_check(
@@ -36,3 +39,4 @@ async def health_check(
         "embedding_model": settings.embedding_model,
         "mongodb": "ok",
     }
+
